@@ -4,23 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
     public function addToCart (Request $request, $id)
     {
-        $request->session()->push('cart', $id);
+        $product = Product::find($id);
+
+        $cart = $request->session()->get('cart');
+        $cart[$product->id] = ["id" => $product->id, "name" => $product->name, "image" => $product->image, "price" => $product->price, "quantity" => 1,];
+        $request->session()->put('cart', $cart);
+
+
         return redirect()->route('product_index');
     }
 
-    public function cart (Request $request)
+    public function cart ()
     {
-        $productId = $request->session()->get('cart');
+        return view('cart');
+    }
 
-        $products = [];
-        foreach ($productId as $item) {
-            $products[] = Product::where('id', $item)->get();
-        }
-        return view('cart', compact(['products', 'productId']));
+    /** XOA PRODUCT THEO ID
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteProduct (Request $request, $id)
+    {
+        $request->session()->get('cart');
+
+        $request->session()->forget("cart.$id");
+
+        return redirect()->route('cart');
     }
 }

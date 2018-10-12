@@ -20,6 +20,9 @@ Route::middleware('auth')->get('/', function () {
 
 });
 
+
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -35,6 +38,10 @@ Route::post('/add','ProductController@store')->name('product_add');
 Route::get('products/{id}', 'CartController@addToCart')->name('cart_add');
 
 Route::get('/cart', 'CartController@cart')->name('cart');
+
+Route::get('/delete-product-cart/{id}', 'CartController@deleteProduct')->name('delete_product');
+
+
 
 //Route::get('products/delete/{id}', 'ProductController@delete')->name('product_delete');
 

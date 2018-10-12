@@ -1,32 +1,52 @@
-@extends('layouts.master')
+@extends('layouts.cartshop')
 @section('content')
-
-    <div class="title m-b-md">
-        Product Details
-    </div>
-
-    <div class="row">
-
-        <!-- Kiểm tra biến $product được truyền sang từ ProductController -->
-        <!-- Nếu biến $products không tồn tại thì hiển thị thông báo -->
-        @if(!isset($products))
-            <p class="text-danger">Không có sản phẩn nào.</p>
-        @else
-
-        <!-- Nếu biến $product tồn tại thì hiển thị sản phẩm -->
-            <div class="col-12">
-                <div class="card text-left" style="width: 100%;">
-                    <div class="card-body">
-
-                        <p class="card-text">{{ $products }}</p>
-                        <p class="card-text text-dark">${{ $productId }}</p>
-                        <br>
-                        <br>
-                        <!-- Nút XEM chuyển hướng người dùng quay lại trang danh sách sản phẩm -->
-                        <a href="{{ route('product_index') }}" class="btn btn-primary"> Back </a>
-                    </div>
-                </div>
+    <div class="col-12">
+        <div class="row">
+            <div class="title">
+                <h1>Product Details</h1>
             </div>
-        @endif
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Image</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @if(!Session::has('cart'))
+                    <tr>
+                        <td colspan="4">Không có sản phẩn nào</td>
+                    </tr>
+                @else
+                    <?php $stt = 0 ?>
+                    @foreach(Session::get('cart') as $key => $item)
+                        <?php $stt++ ?>
+                        <tr>
+                            <td>{{ $stt }}</td>
+                            <td>{{ $item['name'] }}</td>
+                            <td>${{ $item['price'] }}</td>
+                            <td>{{ $item['quantity'] }}</td>
+                            <td>
+                                <img src="{{ asset('storage/images/' . $item['image']) }}" alt=""
+                                     style="width: 100px; height: 100px; overflow: hidden ">
+                            </td>
+                            <td>
+                                <a href="{{ route('delete_product', $item['id']) }}"  class="btn btn-info delete-task">Delete</a>
+                            </td>
+                        </tr>
+
+
+                    @endforeach
+                @endif
+                </tbody>
+            </table>
+            <div>
+                <a href="{{ route('product_index') }}" class="btn btn-info">BACK</a>
+            </div>
+        </div>
     </div>
 @endsection
